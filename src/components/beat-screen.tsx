@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Check, ChevronsUpDown, GripVertical, MoveDown, MoveUp } from "lucide-react";
+import { ArrowRight, Check, GripVertical, MoveDown, MoveUp } from "lucide-react";
 
 type Beat = any; // You might want to define a proper type for your beats
 
@@ -17,10 +17,35 @@ type BeatScreenProps = {
 
 const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInteractionComplete: (result: any) => void }) => {
   const [items, setItems] = useState(beat.interaction.items.map((item: any) => ({ ...item, currentCategory: 'unassigned' })));
+  const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
 
-  const handleMove = (itemId: string, category: string) => {
-    setItems(items.map((item: any) => item.id === itemId ? { ...item, currentCategory: category } : item));
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, itemId: string) => {
+    e.dataTransfer.setData("itemId", itemId);
+    setDraggedItemId(itemId);
   };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, category: string) => {
+    e.preventDefault();
+    const itemId = e.dataTransfer.getData("itemId");
+    setItems(currentItems => currentItems.map((item: any) => item.id === itemId ? { ...item, currentCategory: category } : item));
+    setDraggedItemId(null);
+    (e.currentTarget as HTMLElement).classList.remove('border-primary', 'bg-primary/10');
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (draggedItemId) {
+      (e.currentTarget as HTMLElement).classList.add('border-primary', 'bg-primary/10');
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    (e.currentTarget as HTMLElement).classList.remove('border-primary', 'bg-primary/10');
+  };
+
+  const unassignedItems = items.filter((item: any) => item.currentCategory === 'unassigned');
+  const category1Items = items.filter((item: any) => item.currentCategory === beat.interaction.categories[0]);
+  const category2Items = items.filter((item: any) => item.currentCategory === beat.interaction.categories[1]);
 
   const handleSubmit = () => {
     let correctCount = 0;
@@ -32,48 +57,56 @@ const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInt
     onInteractionComplete({ correctCount, total: items.length });
   };
 
-  const unassignedItems = items.filter((item: any) => item.currentCategory === 'unassigned');
-  const category1Items = items.filter((item: any) => item.currentCategory === beat.interaction.categories[0]);
-  const category2Items = items.filter((item: any) => item.currentCategory === beat.interaction.categories[1]);
+  const renderItem = (item: any) => (
+    <div 
+      key={item.id} 
+      draggable 
+      onDragStart={(e) => handleDragStart(e, item.id)}
+      onDragEnd={() => setDraggedItemId(null)}
+      className={cn(
+        "p-3 rounded-lg bg-background/50 border cursor-grab",
+        draggedItemId === item.id && "opacity-50"
+      )}
+    >
+      <span>{item.text}</span>
+    </div>
+  );
 
   return (
     <div className="space-y-8">
         <p className="text-center text-lg">{beat.interaction.prompt}</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-secondary/20">
+          <Card 
+            onDrop={(e) => handleDrop(e, 'unassigned')} 
+            onDragOver={handleDragOver} 
+            onDragLeave={handleDragLeave}
+            className="bg-secondary/20 transition-colors"
+          >
             <CardHeader><CardTitle className="text-base text-center">Unsorted</CardTitle></CardHeader>
-            <CardContent className="space-y-2 min-h-[100px]">
-              {unassignedItems.map((item: any) => (
-                <div key={item.id} className="p-3 rounded-lg bg-background/50 border flex items-center justify-between">
-                  <span>{item.text}</span>
-                  <div className="flex gap-1">
-                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleMove(item.id, beat.interaction.categories[0])}>&larr;</Button>
-                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleMove(item.id, beat.interaction.categories[1])}>&rarr;</Button>
-                  </div>
-                </div>
-              ))}
+            <CardContent className="space-y-2 min-h-[100px] p-4">
+              {unassignedItems.map(renderItem)}
             </CardContent>
           </Card>
-          <Card>
+          <Card 
+            onDrop={(e) => handleDrop(e, beat.interaction.categories[0])} 
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            className="transition-colors"
+          >
             <CardHeader><CardTitle className="text-base text-center">{beat.interaction.categories[0]}</CardTitle></CardHeader>
-            <CardContent className="space-y-2 min-h-[100px]">
-              {category1Items.map((item: any) => (
-                <div key={item.id} className="p-3 rounded-lg bg-secondary/30 border flex items-center justify-between">
-                  <span>{item.text}</span>
-                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleMove(item.id, 'unassigned')}>&rarr;</Button>
-                </div>
-              ))}
+            <CardContent className="space-y-2 min-h-[100px] p-4">
+              {category1Items.map(renderItem)}
             </CardContent>
           </Card>
-          <Card>
+          <Card 
+            onDrop={(e) => handleDrop(e, beat.interaction.categories[1])} 
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            className="transition-colors"
+          >
             <CardHeader><CardTitle className="text-base text-center">{beat.interaction.categories[1]}</CardTitle></CardHeader>
-            <CardContent className="space-y-2 min-h-[100px]">
-              {category2Items.map((item: any) => (
-                <div key={item.id} className="p-3 rounded-lg bg-secondary/30 border flex items-center justify-between">
-                  <span>{item.text}</span>
-                  <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleMove(item.id, 'unassigned')}>&larr;</Button>
-                </div>
-              ))}
+            <CardContent className="space-y-2 min-h-[100px] p-4">
+              {category2Items.map(renderItem)}
             </CardContent>
           </Card>
         </div>
@@ -84,8 +117,13 @@ const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInt
   );
 };
 
+
 const OrderingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInteractionComplete: (result: any) => void }) => {
-    const [items, setItems] = useState(beat.interaction.items.sort(() => Math.random() - 0.5));
+    const [items, setItems] = useState<any[]>([]);
+
+    useEffect(() => {
+        setItems(beat.interaction.items.sort(() => Math.random() - 0.5));
+    }, [beat.interaction.items]);
 
     const handleMove = (index: number, direction: 'up' | 'down') => {
         const newItems = [...items];
@@ -113,6 +151,7 @@ const OrderingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onIn
                 <Card key={item.id} className="p-3 flex items-center justify-between bg-secondary/20">
                     <div className="flex items-center gap-4">
                         <GripVertical className="text-muted-foreground" />
+                        <span className="font-mono font-semibold text-primary w-6 text-center">{index + 1}</span>
                         <span>{item.text}</span>
                     </div>
                     <div className="flex flex-col">
@@ -180,14 +219,29 @@ const MultiChoiceInteraction = ({ beat, onInteractionComplete }: { beat: Beat, o
 
 const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInteractionComplete: (result: any) => void }) => {
     const [schedule, setSchedule] = useState<{ [key: string]: string | null }>({});
-    const [activeToken, setActiveToken] = useState<string | null>(null);
 
-    const handleDayClick = (day: string) => {
-        if (activeToken) {
-            setSchedule(prev => ({...prev, [day]: activeToken}));
-            setActiveToken(null);
-        }
+    const handleDragStart = (e: React.DragEvent<HTMLButtonElement>, token: string) => {
+        e.dataTransfer.setData("token", token);
     };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>, day: string) => {
+        e.preventDefault();
+        const token = e.dataTransfer.getData("token");
+        if(token) {
+            setSchedule(prev => ({...prev, [day]: token}));
+        }
+        (e.currentTarget as HTMLElement).classList.remove('border-primary', 'bg-primary/10');
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        (e.currentTarget as HTMLElement).classList.add('border-primary', 'bg-primary/10');
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        (e.currentTarget as HTMLElement).classList.remove('border-primary', 'bg-primary/10');
+    };
+
 
     const handleSubmit = () => {
         // Simple validation logic for feedback
@@ -207,25 +261,39 @@ const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, on
         <div className="w-full max-w-3xl mx-auto">
             <p className="text-center text-lg mb-2">{beat.interaction.prompt}</p>
             <CardDescription className="text-center mb-6">
-                {beat.interaction.rules.join(' ')}
+                Drag tokens onto the days below. {beat.interaction.rules.join(' ')}
             </CardDescription>
 
             <div className="flex justify-center gap-2 mb-8 flex-wrap">
                 {beat.interaction.tokens.map((token: string) => (
-                    <Button key={token} variant={activeToken === token ? 'default' : 'outline'} onClick={() => setActiveToken(token)}>{token}</Button>
+                    <Button 
+                        key={token} 
+                        variant='outline'
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, token)}
+                        className="cursor-grab"
+                    >
+                        {token}
+                    </Button>
                 ))}
             </div>
 
             <div className="grid grid-cols-7 gap-1 border rounded-lg p-2">
                 {beat.interaction.days.map((day: string) => (
-                    <div key={day} onClick={() => handleDayClick(day)} className={cn("h-24 border rounded-md flex flex-col items-center justify-center cursor-pointer hover:bg-secondary/50", schedule[day] && 'bg-secondary/30')}>
+                    <div 
+                        key={day} 
+                        onDrop={(e) => handleDrop(e, day)}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        className={cn("h-24 border rounded-md flex flex-col items-center justify-center transition-colors cursor-pointer", schedule[day] && 'bg-secondary/30')}>
                         <p className="font-semibold text-sm">{day}</p>
                         {schedule[day] && <p className="text-xs mt-2 text-center p-1 bg-background rounded">{schedule[day]}</p>}
                     </div>
                 ))}
             </div>
 
-            <div className="text-center pt-8">
+            <div className="flex justify-between items-center pt-8">
+                <Button variant="ghost" onClick={() => setSchedule({})}>Clear Board</Button>
                 <Button size="lg" onClick={handleSubmit} disabled={Object.keys(schedule).length < 7}>Submit</Button>
             </div>
         </div>
@@ -278,7 +346,7 @@ export function BeatScreen({ beat, onComplete }: BeatScreenProps) {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-8 flex flex-col justify-center">
+    <div className="w-full max-w-4xl mx-auto p-8 flex flex-col justify-center">
       {view === "setup" && (
         <div className="text-center animate-in fade-in duration-700">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">{beat.setup.title}</h2>
