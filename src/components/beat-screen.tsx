@@ -55,13 +55,25 @@ const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInt
   };
   
   const handleContinue = () => {
-    let correctCount = 0;
-    items.forEach((item: any) => {
-      if (item.currentCategory === item.category) {
-        correctCount++;
-      }
-    });
-    onInteractionComplete({ correctCount, total: items.length });
+    // This logic is specific to Beat 4.
+    if (beat.feedback.driveHeavy) { 
+      const driveBuilderCount = items.filter((i: any) => i.currentCategory === 'Drive-Builders').length;
+      const hereAndNowBuilderCount = items.filter((i: any) => i.currentCategory === 'Here-and-Now Builders').length;
+      
+      let feedbackKey = 'balanced';
+      if (driveBuilderCount > hereAndNowBuilderCount + 2) feedbackKey = 'driveHeavy';
+      if (hereAndNowBuilderCount > driveBuilderCount + 2) feedbackKey = 'hereAndNowHeavy';
+
+      onInteractionComplete({ feedbackKey });
+    } else { // Fallback for other sorting beats (like Beat 1)
+      let correctCount = 0;
+      items.forEach((item: any) => {
+        if (item.currentCategory === item.category) {
+          correctCount++;
+        }
+      });
+      onInteractionComplete({ correctCount, total: items.length });
+    }
   };
 
   const renderItem = (item: any) => {
@@ -367,7 +379,11 @@ export function BeatScreen({ beat, onComplete }: BeatScreenProps) {
   };
 
   const getFeedback = () => {
+    if (!interactionResult) return "";
     if (beat.type === 'sorting') {
+        if (interactionResult.feedbackKey) {
+            return beat.feedback[interactionResult.feedbackKey];
+        }
         const { correctCount, total } = interactionResult;
         return correctCount > total / 2 ? beat.feedback.correct : beat.feedback.mixed;
     }
