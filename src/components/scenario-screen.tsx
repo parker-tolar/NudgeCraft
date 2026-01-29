@@ -19,12 +19,6 @@ const feedbackIcons = {
   counterproductive: <XCircle className="text-destructive" />,
 };
 
-const feedbackBorderColors = {
-  supportive: "border-primary/50",
-  pressuring: "border-accent/50",
-  counterproductive: "border-destructive/50",
-};
-
 export function ScenarioScreen({ onComplete }: ScenarioScreenProps) {
   const [step, setStep] = useState(0);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
@@ -45,8 +39,8 @@ export function ScenarioScreen({ onComplete }: ScenarioScreenProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl p-4 md:p-8 animate-in fade-in duration-700 flex flex-col justify-center min-h-screen">
-      <Card className="bg-background/50 border-border/50">
+    <div className="w-full max-w-3xl mx-auto animate-in fade-in duration-700 flex flex-col justify-center">
+      <Card className="bg-transparent border-0 shadow-none">
         <CardHeader>
           <p className="text-muted-foreground">Alex says:</p>
           <blockquote className="mt-2 text-xl md:text-2xl text-foreground italic">
@@ -62,27 +56,27 @@ export function ScenarioScreen({ onComplete }: ScenarioScreenProps) {
                 disabled={!!selectedOption}
                 onClick={() => handleOptionSelect(option)}
                 className={cn(
-                  "p-4 rounded-lg border-2 text-left transition-all duration-300",
+                  "p-5 rounded-xl border text-left transition-all duration-300 group",
                   "disabled:cursor-not-allowed",
                   selectedOption
                     ? selectedOption.id === option.id
-                      ? `bg-secondary ${feedbackBorderColors[option.type as keyof typeof feedbackBorderColors]}`
-                      : "opacity-30 border-transparent"
-                    : "hover:bg-secondary/50 border-border"
+                      ? `bg-secondary/50 border-primary/50 ring-2 ring-primary/30 shadow-lg shadow-primary/10`
+                      : "opacity-40 border-border/20"
+                    : "bg-secondary/20 border-border/30 hover:bg-secondary/30 hover:border-primary/30 hover:ring-1 hover:ring-primary/20 hover:shadow-md hover:shadow-primary/5"
                 )}
               >
-                <p>{option.text}</p>
+                <p className="text-foreground/90 leading-normal">{option.text}</p>
               </button>
             ))}
           </div>
         </CardContent>
         {selectedOption && (
-          <CardFooter className="flex flex-col items-start gap-4 p-6 bg-secondary/30 rounded-b-lg animate-in fade-in duration-500">
+          <CardFooter className="flex flex-col items-start gap-4 p-6 mt-6 border-t border-border/30 bg-secondary/20 rounded-b-xl animate-in fade-in duration-500">
             <div className="flex items-center gap-3">
               {feedbackIcons[selectedOption.type as keyof typeof feedbackIcons]}
               <h3 className="text-lg font-semibold capitalize text-foreground">{selectedOption.type}</h3>
             </div>
-            <p className="text-foreground/80">{selectedOption.feedback}</p>
+            <p className="text-foreground/80 leading-relaxed">{selectedOption.feedback}</p>
             <Button onClick={handleNext} className="self-end mt-2">
               {step === scenarioContent.steps.length - 1 ? 'Finish Scenario' : 'Next'}
               <ArrowRight className="ml-2" />

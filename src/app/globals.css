@@ -4,19 +4,19 @@
 
 @layer base {
   :root {
-    --background: 0 0% 17%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 17%; /* #2B2B2B */
+    --foreground: 0 0% 98%; /* #FAFAFA */
     --card: 0 0% 17%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 17%;
     --popover-foreground: 0 0% 98%;
-    --primary: 207 90% 68%;
+    --primary: 207 90% 68%; /* #64B5F6 */
     --primary-foreground: 210 40% 9.8%;
     --secondary: 0 0% 24%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 24%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 55 100% 61%;
+    --accent: 55 96% 61%; /* #FFEB3B */
     --accent-foreground: 55 25% 15%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -28,7 +28,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 0.75rem;
     --sidebar-background: 0 0% 17%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 207 90% 68%;
@@ -51,7 +51,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 24%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 55 100% 61%;
+    --accent: 55 96% 61%;
     --accent-foreground: 55 25% 15%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -80,5 +80,19 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    @apply bg-primary/20;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+  p, blockquote, ul, ol {
+    @apply leading-relaxed;
+  }
+  :where(p, blockquote, ul, ol) + :where(h1, h2, h3, h4) {
+    @apply mt-10;
   }
 }

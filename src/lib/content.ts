@@ -33,19 +33,19 @@ export const scenarioContent = {
           id: 1,
           text: "It sounds like it's been hard to connect with the work lately. What's been on your mind?",
           type: "supportive",
-          feedback: "Supportive. This response opens a dialogue without judgment. By acknowledging their feeling ('hard to connect') and asking an open-ended question, you invite them to share more. This lowers resistance and affirms their autonomy."
+          feedback: "Autonomy preserved: This response opens a dialogue without judgment. By acknowledging their feeling ('hard to connect') and asking an open-ended question, you invite them to share more. This lowers resistance."
         },
         {
           id: 2,
           text: "The deadline is pretty firm. We really need you to find a way to get focused and push through this.",
           type: "pressuring",
-          feedback: "Subtly Pressuring. While seemingly helpful, this focuses on the problem (the deadline) and implies their current state is something to be 'pushed through.' It applies pressure and can make them feel like a problem to be solved, increasing resistance."
+          feedback: "Pressure increased: This focuses on the problem (the deadline) and implies their current state is something to be 'pushed through.' It applies pressure and can make them feel like a problem to be solved, increasing resistance."
         },
         {
           id: 3,
           text: "Look, we all have off weeks. You just need to power through it. This can't slip.",
           type: "counterproductive",
-          feedback: "Counterproductive. This dismisses their experience ('we all have off weeks') and applies direct pressure ('power through it'). It signals that their feelings are irrelevant, which shuts down communication and guarantees resistance."
+          feedback: "Resistance signal: This dismisses their experience ('we all have off weeks') and applies direct pressure ('power through it'). It signals that their feelings are irrelevant, which shuts down communication and guarantees resistance."
         }
       ]
     },
@@ -56,19 +56,19 @@ export const scenarioContent = {
           id: 1,
           text: "I hear that. It's tough to push hard when the purpose isn't clear. Can we talk about what part of this project used to excite you?",
           type: "supportive",
-          feedback: "Supportive. You validate their feeling and connect it to a universal need for purpose. By asking about past excitement, you shift from the current problem to exploring potential solutions and reconnecting with their intrinsic motivation."
+          feedback: "Autonomy preserved: You validate their feeling and connect it to a universal need for purpose. By asking about past excitement, you shift from the current problem to exploring potential solutions and reconnecting with their intrinsic motivation."
         },
         {
           id: 2,
           text: "A lot of projects feel like a grind. It's part of the job. What can we do to make it feel more manageable so you can get it done?",
           type: "pressuring",
-          feedback: "Subtly Pressuring. This normalizes the 'grind,' but frames the conversation around task management ('make it manageable') rather than motivation. It's a solution-focused approach that subtly pressures them toward completion without addressing the root cause."
+          feedback: "Pressure increased: This normalizes the 'grind,' but frames the conversation around task management ('make it manageable') rather than motivation. It's a solution-focused approach that subtly pressures them toward completion without addressing the root cause."
         },
         {
           id: 3,
           text: "Motivation isn't really the point. The point is delivering on our commitments. We all have to do things we don't 'feel' like doing.",
           type: "counterproductive",
-          feedback: "Counterproductive. This creates a direct conflict, pitting your need for delivery against their feeling. It explicitly invalidates their experience and frames the work as a non-negotiable obligation, which is the fastest way to destroy autonomy."
+          feedback: "Resistance signal: This creates a direct conflict, pitting your need for delivery against their feeling. It explicitly invalidates their experience and frames the work as a non-negotiable obligation, which is the fastest way to destroy autonomy."
         }
       ]
     },
@@ -79,19 +79,19 @@ export const scenarioContent = {
           id: 1,
           text: "That's a tough feeling. It sounds like you're questioning your fit here. Let's forget the deadline for a minute. What kind of work *would* feel energizing for you right now?",
           type: "supportive",
-          feedback: "Supportive. This is a powerful move. You validate a deep concern (their 'fit'), remove the immediate pressure (the deadline), and give them full autonomy to explore what they value. This builds trust and opens up a completely different, more honest conversation."
+          feedback: "Autonomy preserved: You validate a deep concern (their 'fit'), remove the immediate pressure (the deadline), and give them full autonomy to explore what they value. This builds trust and opens up a completely different, more honest conversation."
         },
         {
           id: 2,
           text: "You're definitely the right person. That's just a feeling of being overwhelmed. Let's break down your remaining tasks into smaller steps. That always helps.",
           type: "pressuring",
-          feedback: "Subtly Pressuring. Reassuring them ('You're the right person') can feel helpful, but you're also diagnosing their feeling ('you're overwhelmed') and jumping to a solution ('break it down'). This takes away their agency to define their own problem."
+          feedback: "Pressure increased: While reassuring them ('You're the right person'), you're also diagnosing their feeling ('you're overwhelmed') and jumping to a solution ('break it down'). This takes away their agency to define their own problem."
         },
         {
           id: 3,
           text: "We can't afford to have you second-guessing yourself now. You were assigned this for a reason. Let's focus on the tasks, not the feelings.",
           type: "counterproductive",
-          feedback: "Counterproductive. This response communicates panic and dismisses their feelings as a liability. The message is clear: 'Your feelings are a problem; just do the work.' This maximizes pressure and invalidates their perspective, effectively ending any chance of a collaborative outcome."
+          feedback: "Resistance signal: This response communicates panic and dismisses their feelings as a liability. The message is clear: 'Your feelings are a problem; just do the work.' This maximizes pressure and invalidates their perspective."
         }
       ]
     }

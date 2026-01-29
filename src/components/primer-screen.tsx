@@ -13,7 +13,7 @@ type PrimerScreenProps = {
 
 export function PrimerScreen({ title, text, pullQuote, onNext, isLast }: PrimerScreenProps) {
   return (
-    <div className="w-full max-w-3xl mx-auto p-8 animate-in fade-in duration-700 flex flex-col justify-center min-h-screen">
+    <div className="w-full max-w-3xl mx-auto p-8 animate-in fade-in duration-700 flex flex-col justify-center">
       <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-primary">{title}</h2>
       <p className="mt-6 text-lg md:text-xl text-foreground/80 leading-relaxed">
         {text}
