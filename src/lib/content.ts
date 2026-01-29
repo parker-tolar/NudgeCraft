@@ -1,118 +1,171 @@
 export const APP_NAME = "NudgeCraft";
 
 export const landingContent = {
-  thesis: "The gentlest pressure creates the strongest resistance. True change is invited, not demanded."
+  thesis: "A micro-course on the science of motivation and focus, based on the work of Dr. Andrew Huberman."
 };
 
-export const primerContent = [
-  {
-    title: "The Pressure Paradox",
-    text: "When we push, people push back. It's a natural, protective instinct called psychological reactance. The more we insist, the more they resist, even if they secretly agree.",
-    pullQuote: "Pressure is the enemy of authentic motivation."
-  },
-  {
-    title: "The Power of Autonomy",
-    text: "Lasting change comes from within. When people feel they have a choice, they are more likely to own their decisions and commit to action. The goal is to create an environment where they *want* to change, not *have* to.",
-    pullQuote: "Autonomy turns 'have to' into 'want to'."
-  },
-  {
-    title: "From Fixing to Understanding",
-    text: "Our role isn't to 'fix' someone's lack of motivation. It's to understand the story behind their resistance. By listening without judgment, we lower their defenses and open the door to collaboration and self-discovery.",
-    pullQuote: "Seek to understand, not to solve."
-  }
-];
-
-export const scenarioContent = {
-  title: "Interactive Scenario",
-  situation: "Your team member, Alex, has been quiet and disengaged for the past two weeks. A key project deadline is approaching, and their part is falling behind. You sit down to talk.",
-  steps: [
-    {
-      dialogue: "I know, I know. I'm behind. I just... haven't been able to get into it.",
-      options: [
+export const hubermanCourse = {
+    title: "The Science of Motivation",
+    beats: [
         {
-          id: 1,
-          text: "It sounds like it's been hard to connect with the work lately. What's been on your mind?",
-          type: "supportive",
-          feedback: "Autonomy preserved: This response opens a dialogue without judgment. By acknowledging their feeling ('hard to connect') and asking an open-ended question, you invite them to share more. This lowers resistance."
+            type: 'sorting',
+            setup: {
+                title: 'Dopamine = Wanting (not pleasure)',
+                text: 'Dopamine is mainly about drive and anticipation, not enjoyment. It narrows your focus toward what you want next.',
+            },
+            interaction: {
+                prompt: 'Sort these into Wanting (drive) vs Enjoying (here-and-now).',
+                categories: ['Wanting (drive)', 'Enjoying (here-and-now)'],
+                items: [
+                    { id: 'b1-i1', text: 'I’m restless until I start.', category: 'Wanting (drive)' },
+                    { id: 'b1-i2', text: 'I’m fixated on the next step.', category: 'Wanting (drive)' },
+                    { id: 'b1-i3', text: 'Just thinking about it makes me want it.', category: 'Wanting (drive)' },
+                    { id: 'b1-i4', text: 'I can’t stop checking progress.', category: 'Wanting (drive)' },
+                    { id: 'b1-i5', text: 'I feel satisfied in the moment.', category: 'Enjoying (here-and-now)' },
+                    { id: 'b1-i6', text: 'I’m present and content right now.', category: 'Enjoying (here-and-now)' },
+                    { id: 'b1-i7', text: 'I can enjoy what I already have.', category: 'Enjoying (here-and-now)' },
+                    { id: 'b1-i8', text: 'I’m calm even if nothing changes.', category: 'Enjoying (here-and-now)' },
+                ],
+            },
+            feedback: {
+                correct: 'You separated pursuit from enjoyment. That’s the foundational skill.',
+                mixed: 'Notice how ‘wanting’ feels urgent and narrow; ‘enjoying’ feels settled and wide.',
+            },
+            pattern: 'balance'
         },
         {
-          id: 2,
-          text: "The deadline is pretty firm. We really need you to find a way to get focused and push through this.",
-          type: "pressuring",
-          feedback: "Pressure increased: This focuses on the problem (the deadline) and implies their current state is something to be 'pushed through.' It applies pressure and can make them feel like a problem to be solved, increasing resistance."
+            type: 'ordering',
+            setup: {
+                title: 'Anticipation is the lever',
+                text: 'Anticipation can spike drive before reward is even received. The goal is to use anticipation to start, not to spiral into craving.',
+            },
+            interaction: {
+                prompt: 'Arrange the steps into the best sequence to trigger momentum (without relying on hype).',
+                items: [
+                    { id: 'b2-i1', text: 'Define a tiny start line (2 minutes).', correctOrder: 0 },
+                    { id: 'b2-i2', text: 'Make the next action painfully concrete.', correctOrder: 1 },
+                    { id: 'b2-i3', text: 'Remove one obvious distraction.', correctOrder: 2 },
+                    { id: 'b2-i4', text: 'Start (even imperfectly).', correctOrder: 3 },
+                    { id: 'b2-i5', text: 'Mark completion with a small acknowledgment.', correctOrder: 4 },
+                    { id: 'b2-i6', text: 'Stop and reset—don’t chase the next hit.', correctOrder: 5 },
+                ],
+            },
+            feedback: {
+                default: 'The point isn’t ‘motivation.’ It’s starting. Anticipation should push you into action, not into obsessing.',
+            },
+            pattern: 'pressure'
         },
         {
-          id: 3,
-          text: "Look, we all have off weeks. You just need to power through it. This can't slip.",
-          type: "counterproductive",
-          feedback: "Resistance signal: This dismisses their experience ('we all have off weeks') and applies direct pressure ('power through it'). It signals that their feelings are irrelevant, which shuts down communication and guarantees resistance."
+            type: 'multi-choice',
+            setup: {
+                title: 'Pleasure has a shadow: craving/pain',
+                text: 'After pleasure, the brain produces a downshift that can feel like craving. Over time: pleasure tends to weaken, craving tends to grow.',
+            },
+            interaction: {
+                steps: [
+                    {
+                        prompt: 'You finish a meaningful task. What’s the best move to avoid the crash-and-crave cycle?',
+                        options: [
+                            { id: 'b3-p1-o1', text: 'Celebrate hard every time so you stay motivated.', correct: false },
+                            { id: 'b3-p1-o2', text: 'Treat every win like nothing—never celebrate.', correct: false },
+                            { id: 'b3-p1-o3', text: 'Acknowledge the win, but don’t spike it every time.', correct: true },
+                        ],
+                    },
+                    {
+                        prompt: 'Why is that the best move?',
+                        options: [
+                            { id: 'b3-p2-o1', text: 'Big predictable rewards train bigger crashes.', correct: true },
+                            { id: 'b3-p2-o2', text: 'Celebration is always bad.', correct: false },
+                            { id: 'b3-p2-o3', text: 'Motivation only works if you suffer.', correct: false },
+                            { id: 'b3-p2-o4', text: 'You should never feel good about progress.', correct: false },
+                        ],
+                    }
+                ]
+            },
+            feedback: {
+                default: 'The goal is stable drive. Predictable spikes train predictable crashes. You’re not killing joy—just stopping the brain from demanding ‘more’ instantly.',
+            },
+            pattern: 'balance'
+        },
+        {
+            type: 'sorting',
+            setup: {
+                title: 'Balance drive vs here-and-now',
+                text: 'Drive pulls attention outward toward what you don’t have yet. Here-and-now chemistry supports contentment with what’s present. A healthy system uses both.',
+            },
+            interaction: {
+                prompt: 'Sort practices into Drive-Builders vs Here-and-Now Builders.',
+                categories: ['Drive-Builders', 'Here-and-Now Builders'],
+                items: [
+                  { id: 'b4-i1', text: 'Write the next action on one line.', category: 'Drive-Builders' },
+                  { id: 'b4-i2', text: 'Add novelty: change location or method.', category: 'Drive-Builders' },
+                  { id: 'b4-i3', text: 'Use a short timed sprint (10–20 min).', category: 'Drive-Builders' },
+                  { id: 'b4-i4', text: 'Pre-commit: calendar a start time.', category: 'Drive-Builders' },
+                  { id: 'b4-i5', text: 'Savor one small part of the experience.', category: 'Here-and-Now Builders' },
+                  { id: 'b4-i6', text: 'Slow attention: one sensory detail.', category: 'Here-and-Now Builders' },
+                  { id: 'b4-i7', text: 'Short decompression ritual after effort.', category: 'Here-and-Now Builders' },
+                  { id: 'b4-i8', text: 'Gratitude for what’s already done.', category: 'Here-and-Now Builders' },
+                  { id: 'b4-i9', text: 'Sleep protection (consistent bedtime).', category: 'Here-and-Now Builders' },
+                  { id: 'b4-i10', text: 'Do nothing for 60 seconds on purpose.', category: 'Here-and-Now Builders' },
+                ],
+            },
+            feedback: {
+                driveHeavy: 'You’re great at pursuit. Watch for never landing.',
+                hereAndNowHeavy: 'You’re great at settling. Watch for difficulty starting.',
+                balanced: 'This is the sweet spot: pursue, then land.',
+            },
+            pattern: 'balance'
+        },
+        {
+            type: 'scheduling',
+            setup: {
+                title: 'Intermittent rewards (use the casino trick for good)',
+                text: 'Intermittent reinforcement is extremely powerful—this is why gambling hooks people. Used responsibly, it can keep motivation high without burnout.',
+            },
+            interaction: {
+                prompt: 'Build a 7-day reward schedule for a goal.',
+                rules: [
+                    'You cannot reward every day.',
+                    'Include 1 surprise reward (not tied to the biggest milestone).',
+                    'Include 1 ‘blunted win’ (you acknowledge progress but no big celebration).',
+                    'Include 2+ no-reward days in the week.',
+                ],
+                tokens: [ 'No Reward', 'Tiny Reward', 'Surprise Reward', 'Blunted Win', 'Social Reward', 'Rest/Reset' ],
+                days: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7']
+            },
+            feedback: {
+                tooFrequent: 'This trains dependence and crashes.',
+                tooSparse: 'This risks drift and avoidance.',
+                good: 'This keeps drive alive while reducing the ‘more’ trap.',
+            },
+            pattern: 'pressure'
         }
-      ]
-    },
-    {
-      dialogue: "I don't know. I guess I'm just not feeling very motivated by this project anymore. It feels like a lot of work for... what?",
-      options: [
-        {
-          id: 1,
-          text: "I hear that. It's tough to push hard when the purpose isn't clear. Can we talk about what part of this project used to excite you?",
-          type: "supportive",
-          feedback: "Autonomy preserved: You validate their feeling and connect it to a universal need for purpose. By asking about past excitement, you shift from the current problem to exploring potential solutions and reconnecting with their intrinsic motivation."
-        },
-        {
-          id: 2,
-          text: "A lot of projects feel like a grind. It's part of the job. What can we do to make it feel more manageable so you can get it done?",
-          type: "pressuring",
-          feedback: "Pressure increased: This normalizes the 'grind,' but frames the conversation around task management ('make it manageable') rather than motivation. It's a solution-focused approach that subtly pressures them toward completion without addressing the root cause."
-        },
-        {
-          id: 3,
-          text: "Motivation isn't really the point. The point is delivering on our commitments. We all have to do things we don't 'feel' like doing.",
-          type: "counterproductive",
-          feedback: "Resistance signal: This creates a direct conflict, pitting your need for delivery against their feeling. It explicitly invalidates their experience and frames the work as a non-negotiable obligation, which is the fastest way to destroy autonomy."
+    ],
+    recap: {
+        title: "Insight Recap",
+        principles: [
+            {
+                title: "Dopamine is for pursuit",
+                description: "It's the engine of wanting, not the feeling of having. Use it to start, not just to chase."
+            },
+            {
+                title: "Anticipation triggers action",
+                description: "The goal of anticipation is to get you over the starting line, not to daydream about the finish."
+            },
+            {
+                title: "Reward schedules shape stability",
+                description: "How and when you reward yourself matters more than how big the reward is. Keep it intermittent."
+            }
+        ],
+        patterns: {
+            pressure: {
+                title: "Your Pattern: The Gas Pedal",
+                description: "You have a strong instinct for building drive and forward momentum. Your challenge is to balance that with 'here-and-now' states to avoid burnout and a constant feeling of not-enough-ness. Remember to consciously step off the gas."
+            },
+            balance: {
+                title: "Your Pattern: The Navigator",
+                description: "You have a good intuition for balancing drive with contentment. Your challenge is to consciously apply these principles when you feel stuck or unmotivated. You have the map; remember to use it."
+            }
         }
-      ]
-    },
-    {
-      dialogue: "Maybe. I just feel like I'm spinning my wheels. I'm not even sure I'm the right person for this anymore.",
-      options: [
-        {
-          id: 1,
-          text: "That's a tough feeling. It sounds like you're questioning your fit here. Let's forget the deadline for a minute. What kind of work *would* feel energizing for you right now?",
-          type: "supportive",
-          feedback: "Autonomy preserved: You validate a deep concern (their 'fit'), remove the immediate pressure (the deadline), and give them full autonomy to explore what they value. This builds trust and opens up a completely different, more honest conversation."
-        },
-        {
-          id: 2,
-          text: "You're definitely the right person. That's just a feeling of being overwhelmed. Let's break down your remaining tasks into smaller steps. That always helps.",
-          type: "pressuring",
-          feedback: "Pressure increased: While reassuring them ('You're the right person'), you're also diagnosing their feeling ('you're overwhelmed') and jumping to a solution ('break it down'). This takes away their agency to define their own problem."
-        },
-        {
-          id: 3,
-          text: "We can't afford to have you second-guessing yourself now. You were assigned this for a reason. Let's focus on the tasks, not the feelings.",
-          type: "counterproductive",
-          feedback: "Resistance signal: This response communicates panic and dismisses their feelings as a liability. The message is clear: 'Your feelings are a problem; just do the work.' This maximizes pressure and invalidates their perspective."
-        }
-      ]
     }
-  ]
-};
-
-export const reflectionContent = {
-  title: "Reflection",
-  synthesis: "Supportive conversations don't apply pressure; they create space. By prioritizing autonomy and understanding, we invite collaboration instead of triggering resistance.",
-  principles: [
-    {
-      title: "Listen to the Story, Not Just the Words",
-      description: "What's the feeling or belief behind their resistance?"
-    },
-    {
-      title: "Affirm Autonomy",
-      description: "Reinforce that they are in control of their choices and actions."
-    },
-    {
-      title: "Shift from 'Solving' to 'Exploring'",
-      description: "Ask questions that open up possibilities, rather than dictating solutions."
-    }
-  ]
 };

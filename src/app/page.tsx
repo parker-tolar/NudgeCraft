@@ -2,36 +2,34 @@
 
 import { useState } from "react";
 import { LandingScreen } from "@/components/landing-screen";
-import { PrimerScreen } from "@/components/primer-screen";
-import { ScenarioScreen } from "@/components/scenario-screen";
-import { ReflectionScreen } from "@/components/reflection-screen";
-import { primerContent } from "@/lib/content";
+import { BeatScreen } from "@/components/beat-screen";
+import { RecapScreen } from "@/components/recap-screen";
+import { hubermanCourse } from "@/lib/content";
 import { CourseHeader } from "@/components/course-header";
 
-type GameState = "landing" | "primer" | "scenario" | "reflection";
+type GameState = "landing" | "beat" | "recap";
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState>("landing");
-  const [primerStep, setPrimerStep] = useState(0);
+  const [beatStep, setBeatStep] = useState(0);
+  const [userPatterns, setUserPatterns] = useState<string[]>([]);
 
   const handleStart = () => {
-    setGameState("primer");
+    setGameState("beat");
   };
 
-  const handlePrimerNext = () => {
-    if (primerStep < primerContent.length - 1) {
-      setPrimerStep(primerStep + 1);
+  const handleBeatComplete = (pattern: string) => {
+    setUserPatterns(prev => [...prev, pattern]);
+    if (beatStep < hubermanCourse.beats.length - 1) {
+      setBeatStep(beatStep + 1);
     } else {
-      setGameState("scenario");
+      setGameState("recap");
     }
   };
 
-  const handleScenarioComplete = () => {
-    setGameState("reflection");
-  };
-
   const handleReplay = () => {
-    setPrimerStep(0);
+    setBeatStep(0);
+    setUserPatterns([]);
     setGameState("landing");
   };
 
@@ -39,11 +37,9 @@ export default function Home() {
     switch (gameState) {
       case 'landing':
         return 'Introduction';
-      case 'primer':
-        return `Primer (${primerStep + 1}/${primerContent.length})`;
-      case 'scenario':
-        return 'Interactive Scenario';
-      case 'reflection':
+      case 'beat':
+        return `Beat ${beatStep + 1}/${hubermanCourse.beats.length}`;
+      case 'recap':
         return 'Key Principles';
       default:
         return '';
@@ -55,22 +51,17 @@ export default function Home() {
     switch (gameState) {
       case "landing":
         return <LandingScreen onStart={handleStart} />;
-      case "primer":
-        const content = primerContent[primerStep];
+      case "beat":
+        const beat = hubermanCourse.beats[beatStep];
         return (
-          <PrimerScreen
-            key={primerStep}
-            title={content.title}
-            text={content.text}
-            pullQuote={content.pullQuote}
-            onNext={handlePrimerNext}
-            isLast={primerStep === primerContent.length - 1}
+          <BeatScreen
+            key={beatStep}
+            beat={beat}
+            onComplete={handleBeatComplete}
           />
         );
-      case "scenario":
-        return <ScenarioScreen onComplete={handleScenarioComplete} />;
-      case "reflection":
-        return <ReflectionScreen onReplay={handleReplay} />;
+      case "recap":
+        return <RecapScreen onReplay={handleReplay} userPatterns={userPatterns} />;
       default:
         return <LandingScreen onStart={handleStart} />;
     }
@@ -86,7 +77,7 @@ export default function Home() {
           <div className="absolute right-1/4 bottom-1/4 h-64 w-1/2 bg-accent/5 blur-[100px]"></div>
         </div>
         <div className="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div key={gameState + primerStep} className="animate-in fade-in-50 duration-500">
+          <div key={gameState + beatStep} className="animate-in fade-in-50 duration-500">
             {renderContent()}
           </div>
         </div>

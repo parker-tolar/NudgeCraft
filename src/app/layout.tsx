@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'NudgeCraft',
-  description: 'A micro-course on supporting behavior change without pressure.',
+  title: 'NudgeCraft: The Science of Motivation',
+  description: 'A micro-course on the science of motivation, based on the work of Dr. Andrew Huberman.',
 };
 
 export default function RootLayout({
