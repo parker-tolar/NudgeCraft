@@ -7,8 +7,9 @@ import { RecapScreen } from "@/components/recap-screen";
 import { hubermanCourse } from "@/lib/content";
 import { CourseHeader } from "@/components/course-header";
 import { ObjectivesScreen } from "@/components/objectives-screen";
+import { VideoPrimerScreen } from "@/components/video-primer-screen";
 
-type GameState = "objectives" | "landing" | "beat" | "recap";
+type GameState = "objectives" | "landing" | "video" | "beat" | "recap";
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState>("objectives");
@@ -20,6 +21,10 @@ export default function Home() {
   };
 
   const handleStart = () => {
+    setGameState("video");
+  };
+
+  const handleVideoComplete = () => {
     setGameState("beat");
   };
 
@@ -27,6 +32,7 @@ export default function Home() {
     setUserPatterns(prev => [...prev, pattern]);
     if (beatStep < hubermanCourse.beats.length - 1) {
       setBeatStep(beatStep + 1);
+      setGameState("video");
     } else {
       setGameState("recap");
     }
@@ -44,6 +50,8 @@ export default function Home() {
         return 'Learning Objectives';
       case 'landing':
         return 'Introduction';
+      case 'video':
+        return `Primer ${beatStep + 1}/${hubermanCourse.beats.length}`;
       case 'beat':
         return `Beat ${beatStep + 1}/${hubermanCourse.beats.length}`;
       case 'recap':
@@ -55,13 +63,23 @@ export default function Home() {
 
 
   const renderContent = () => {
+    const beat = hubermanCourse.beats[beatStep];
+
     switch (gameState) {
       case "objectives":
         return <ObjectivesScreen onStartCourse={handleStartCourse} />;
       case "landing":
         return <LandingScreen onStart={handleStart} />;
+      case "video":
+        return (
+          <VideoPrimerScreen
+            key={beatStep}
+            videoSrc={beat.video}
+            title={beat.setup.title}
+            onContinue={handleVideoComplete}
+          />
+        );
       case "beat":
-        const beat = hubermanCourse.beats[beatStep];
         return (
           <BeatScreen
             key={beatStep}

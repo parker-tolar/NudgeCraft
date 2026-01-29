@@ -33,6 +33,7 @@ export const hubermanCourse = {
     beats: [
         {
             type: 'sorting',
+            video: '/videos/beat1.mp4',
             setup: {
                 title: 'Dopamine = Wanting (not pleasure)',
                 text: 'Dopamine is mainly about drive and anticipation, not enjoyment. It narrows your focus toward what you want next.',
@@ -59,6 +60,7 @@ export const hubermanCourse = {
         },
         {
             type: 'ordering',
+            video: '/videos/beat2.mp4',
             setup: {
                 title: 'Anticipation is the lever',
                 text: 'Anticipation can spike drive before reward is even received. The goal is to use anticipation to start, not to spiral into craving.',
@@ -81,6 +83,7 @@ export const hubermanCourse = {
         },
         {
             type: 'multi-choice',
+            video: '/videos/beat3.mp4',
             setup: {
                 title: 'Pleasure has a shadow: craving/pain',
                 text: 'After pleasure, the brain produces a downshift that can feel like craving. Over time: pleasure tends to weaken, craving tends to grow.',
@@ -113,6 +116,7 @@ export const hubermanCourse = {
         },
         {
             type: 'sorting',
+            video: '/videos/beat4.mp4',
             setup: {
                 title: 'Balance drive vs here-and-now',
                 text: 'Drive pulls attention outward toward what you don’t have yet. Here-and-now chemistry supports contentment with what’s present. A healthy system uses both.',
@@ -142,6 +146,7 @@ export const hubermanCourse = {
         },
         {
             type: 'scheduling',
+            video: '/videos/beat5.mp4',
             setup: {
                 title: 'Intermittent rewards (use the casino trick for good)',
                 text: 'Intermittent reinforcement is extremely powerful—this is why gambling hooks people. Used responsibly, it can keep motivation high without burnout.',
