@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Check, GripVertical, MoveDown, MoveUp } from "lucide-react";
+import { ArrowRight, Check, GripVertical, MoveDown, MoveUp, X } from "lucide-react";
 
 type Beat = any; // You might want to define a proper type for your beats
 
@@ -18,14 +18,17 @@ type BeatScreenProps = {
 const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInteractionComplete: (result: any) => void }) => {
   const [items, setItems] = useState(beat.interaction.items.map((item: any) => ({ ...item, currentCategory: 'unassigned' })));
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, itemId: string) => {
+    if (submitted) return;
     e.dataTransfer.setData("itemId", itemId);
     setDraggedItemId(itemId);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, category: string) => {
     e.preventDefault();
+    if (submitted) return;
     const itemId = e.dataTransfer.getData("itemId");
     setItems(currentItems => currentItems.map((item: any) => item.id === itemId ? { ...item, currentCategory: category } : item));
     setDraggedItemId(null);
@@ -48,6 +51,10 @@ const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInt
   const category2Items = items.filter((item: any) => item.currentCategory === beat.interaction.categories[1]);
 
   const handleSubmit = () => {
+    setSubmitted(true);
+  };
+  
+  const handleContinue = () => {
     let correctCount = 0;
     items.forEach((item: any) => {
       if (item.currentCategory === item.category) {
@@ -57,20 +64,29 @@ const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInt
     onInteractionComplete({ correctCount, total: items.length });
   };
 
-  const renderItem = (item: any) => (
-    <div 
-      key={item.id} 
-      draggable 
-      onDragStart={(e) => handleDragStart(e, item.id)}
-      onDragEnd={() => setDraggedItemId(null)}
-      className={cn(
-        "p-3 rounded-lg bg-background/50 border cursor-grab",
-        draggedItemId === item.id && "opacity-50"
-      )}
-    >
-      <span>{item.text}</span>
-    </div>
-  );
+  const renderItem = (item: any) => {
+    const isCorrect = item.currentCategory === item.category;
+    return (
+      <div 
+        key={item.id} 
+        draggable={!submitted}
+        onDragStart={(e) => handleDragStart(e, item.id)}
+        onDragEnd={() => setDraggedItemId(null)}
+        className={cn(
+          "p-3 rounded-lg bg-background/50 border flex items-center justify-between transition-colors",
+          !submitted && "cursor-grab",
+          submitted && !isCorrect && "bg-destructive/10 border-destructive/50",
+          submitted && isCorrect && "bg-primary/10 border-primary/50",
+          draggedItemId === item.id && "opacity-50"
+        )}
+      >
+        <span>{item.text}</span>
+        {submitted && (
+          isCorrect ? <Check className="h-4 w-4 text-primary" /> : <X className="h-4 w-4 text-destructive" />
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-8">
@@ -111,7 +127,11 @@ const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInt
           </Card>
         </div>
         <div className="text-center">
-            <Button size="lg" onClick={handleSubmit} disabled={unassignedItems.length > 0}>Submit</Button>
+            {!submitted ? (
+              <Button size="lg" onClick={handleSubmit} disabled={unassignedItems.length > 0}>Submit</Button>
+            ) : (
+              <Button size="lg" onClick={handleContinue}>Continue <ArrowRight className="ml-2" /></Button>
+            )}
         </div>
     </div>
   );
@@ -120,6 +140,7 @@ const SortingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInt
 
 const OrderingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInteractionComplete: (result: any) => void }) => {
     const [items, setItems] = useState<any[]>([]);
+    const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
         setItems(beat.interaction.items.sort(() => Math.random() - 0.5));
@@ -135,33 +156,54 @@ const OrderingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onIn
     };
 
     const handleSubmit = () => {
-        let correctCount = 0;
-        items.forEach((item, index) => {
-            if (item.correctOrder === index) {
-                correctCount++;
-            }
-        });
-        onInteractionComplete({ correctCount, total: items.length });
+        setSubmitted(true);
+    };
+
+    const handleContinue = () => {
+      let correctCount = 0;
+      items.forEach((item, index) => {
+          if (item.correctOrder === index) {
+              correctCount++;
+          }
+      });
+      onInteractionComplete({ correctCount, total: items.length });
     };
 
     return (
         <div className="w-full max-w-md mx-auto space-y-4">
              <p className="text-center text-lg mb-6">{beat.interaction.prompt}</p>
-            {items.map((item, index) => (
-                <Card key={item.id} className="p-3 flex items-center justify-between bg-secondary/20">
-                    <div className="flex items-center gap-4">
-                        <GripVertical className="text-muted-foreground" />
-                        <span className="font-mono font-semibold text-primary w-6 text-center">{index + 1}</span>
-                        <span>{item.text}</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleMove(index, 'up')} disabled={index === 0}><MoveUp /></Button>
-                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleMove(index, 'down')} disabled={index === items.length - 1}><MoveDown /></Button>
-                    </div>
-                </Card>
-            ))}
+            {items.map((item, index) => {
+                const isCorrect = item.correctOrder === index;
+                return (
+                    <Card key={item.id} className={cn(
+                        "p-3 flex items-center justify-between bg-secondary/20 transition-colors",
+                        submitted && isCorrect && "bg-primary/10 border-primary/50",
+                        submitted && !isCorrect && "bg-destructive/10 border-destructive/50"
+                    )}>
+                        <div className="flex items-center gap-4">
+                            {!submitted ? (
+                                <GripVertical className="text-muted-foreground" />
+                            ) : (
+                                isCorrect ? <Check className="h-5 w-5 text-primary" /> : <X className="h-5 w-5 text-destructive" />
+                            )}
+                            <span className="font-mono font-semibold text-primary w-6 text-center">{index + 1}</span>
+                            <span>{item.text}</span>
+                        </div>
+                        {!submitted && (
+                            <div className="flex flex-col">
+                                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleMove(index, 'up')} disabled={index === 0}><MoveUp /></Button>
+                                <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleMove(index, 'down')} disabled={index === items.length - 1}><MoveDown /></Button>
+                            </div>
+                        )}
+                    </Card>
+                )
+            })}
              <div className="text-center pt-4">
-                <Button size="lg" onClick={handleSubmit}>Submit</Button>
+                {!submitted ? (
+                    <Button size="lg" onClick={handleSubmit}>Submit</Button>
+                ) : (
+                    <Button size="lg" onClick={handleContinue}>Continue <ArrowRight className="ml-2" /></Button>
+                )}
             </div>
         </div>
     );
@@ -219,13 +261,16 @@ const MultiChoiceInteraction = ({ beat, onInteractionComplete }: { beat: Beat, o
 
 const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, onInteractionComplete: (result: any) => void }) => {
     const [schedule, setSchedule] = useState<{ [key: string]: string | null }>({});
+    const [submitted, setSubmitted] = useState(false);
 
     const handleDragStart = (e: React.DragEvent<HTMLButtonElement>, token: string) => {
+        if (submitted) return;
         e.dataTransfer.setData("token", token);
     };
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>, day: string) => {
         e.preventDefault();
+        if (submitted) return;
         const token = e.dataTransfer.getData("token");
         if(token) {
             setSchedule(prev => ({...prev, [day]: token}));
@@ -235,7 +280,9 @@ const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, on
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
-        (e.currentTarget as HTMLElement).classList.add('border-primary', 'bg-primary/10');
+        if (!submitted) {
+            (e.currentTarget as HTMLElement).classList.add('border-primary', 'bg-primary/10');
+        }
     };
 
     const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
@@ -244,7 +291,10 @@ const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, on
 
 
     const handleSubmit = () => {
-        // Simple validation logic for feedback
+        setSubmitted(true);
+    };
+    
+    const handleContinue = () => {
         const rewardDays = Object.values(schedule).filter(t => t && t.includes('Reward'));
         const noRewardDays = Object.values(schedule).filter(t => t === 'No Reward').length;
         const surprise = Object.values(schedule).includes('Surprise Reward');
@@ -269,9 +319,9 @@ const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, on
                     <Button 
                         key={token} 
                         variant='outline'
-                        draggable
+                        draggable={!submitted}
                         onDragStart={(e) => handleDragStart(e, token)}
-                        className="cursor-grab"
+                        className={cn(!submitted && "cursor-grab", submitted && "opacity-50")}
                     >
                         {token}
                     </Button>
@@ -285,7 +335,7 @@ const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, on
                         onDrop={(e) => handleDrop(e, day)}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
-                        className={cn("h-24 border rounded-md flex flex-col items-center justify-center transition-colors cursor-pointer", schedule[day] && 'bg-secondary/30')}>
+                        className={cn("h-24 border rounded-md flex flex-col items-center justify-center transition-colors", !submitted && "cursor-pointer", schedule[day] && 'bg-secondary/30')}>
                         <p className="font-semibold text-sm">{day}</p>
                         {schedule[day] && <p className="text-xs mt-2 text-center p-1 bg-background rounded">{schedule[day]}</p>}
                     </div>
@@ -293,8 +343,12 @@ const SchedulingInteraction = ({ beat, onInteractionComplete }: { beat: Beat, on
             </div>
 
             <div className="flex justify-between items-center pt-8">
-                <Button variant="ghost" onClick={() => setSchedule({})}>Clear Board</Button>
-                <Button size="lg" onClick={handleSubmit} disabled={Object.keys(schedule).length < 7}>Submit</Button>
+                <Button variant="ghost" onClick={() => setSchedule({})} disabled={submitted}>Clear Board</Button>
+                {!submitted ? (
+                    <Button size="lg" onClick={handleSubmit} disabled={Object.keys(schedule).length < 7}>Submit</Button>
+                ) : (
+                    <Button size="lg" onClick={handleContinue}>Continue <ArrowRight className="ml-2" /></Button>
+                )}
             </div>
         </div>
     )

@@ -6,13 +6,18 @@ import { BeatScreen } from "@/components/beat-screen";
 import { RecapScreen } from "@/components/recap-screen";
 import { hubermanCourse } from "@/lib/content";
 import { CourseHeader } from "@/components/course-header";
+import { ObjectivesScreen } from "@/components/objectives-screen";
 
-type GameState = "landing" | "beat" | "recap";
+type GameState = "objectives" | "landing" | "beat" | "recap";
 
 export default function Home() {
-  const [gameState, setGameState] = useState<GameState>("landing");
+  const [gameState, setGameState] = useState<GameState>("objectives");
   const [beatStep, setBeatStep] = useState(0);
   const [userPatterns, setUserPatterns] = useState<string[]>([]);
+
+  const handleStartCourse = () => {
+    setGameState("landing");
+  };
 
   const handleStart = () => {
     setGameState("beat");
@@ -30,11 +35,13 @@ export default function Home() {
   const handleReplay = () => {
     setBeatStep(0);
     setUserPatterns([]);
-    setGameState("landing");
+    setGameState("objectives");
   };
 
   const getStageLabel = (): string => {
     switch (gameState) {
+      case 'objectives':
+        return 'Learning Objectives';
       case 'landing':
         return 'Introduction';
       case 'beat':
@@ -49,6 +56,8 @@ export default function Home() {
 
   const renderContent = () => {
     switch (gameState) {
+      case "objectives":
+        return <ObjectivesScreen onStartCourse={handleStartCourse} />;
       case "landing":
         return <LandingScreen onStart={handleStart} />;
       case "beat":
@@ -63,7 +72,7 @@ export default function Home() {
       case "recap":
         return <RecapScreen onReplay={handleReplay} userPatterns={userPatterns} />;
       default:
-        return <LandingScreen onStart={handleStart} />;
+        return <ObjectivesScreen onStartCourse={handleStartCourse} />;
     }
   };
 

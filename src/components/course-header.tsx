@@ -1,6 +1,7 @@
 "use client";
 
-import { APP_NAME } from "@/lib/content";
+import { APP_NAME, APP_BADGE } from "@/lib/content";
+import { Badge } from "@/components/ui/badge";
 
 type CourseHeaderProps = {
   stage: string;
@@ -20,6 +21,7 @@ export function CourseHeader({ stage }: CourseHeaderProps) {
       <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <p className="font-semibold text-lg">{APP_NAME}</p>
+          <Badge variant="outline" className="border-primary/30 text-primary">{APP_BADGE}</Badge>
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>

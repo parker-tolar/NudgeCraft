@@ -1,4 +1,28 @@
 export const APP_NAME = "NudgeCraft";
+export const APP_BADGE = "BETA";
+
+export const objectivesContent = {
+    title: "Learning Objectives",
+    subtitle: "By the end of this micro-course, you will be able to:",
+    objectives: [
+        {
+            title: "Deconstruct Motivation",
+            description: "Separate the 'wanting' from the 'liking' to understand what truly drives you."
+        },
+        {
+            title: "Master Your Momentum",
+            description: "Learn how to use anticipation as a tool to start tasks, not just think about them."
+        },
+        {
+            title: "Build Stable Drive",
+            description: "Design reward schedules that keep you engaged without causing burnout or dependency."
+        },
+        {
+            title: "Balance Pursuit & Presence",
+            description: "Develop practices to switch between goal-striving and being content in the here-and-now."
+        }
+    ]
+};
 
 export const landingContent = {
   thesis: "A micro-course on the science of motivation and focus, based on the work of Dr. Andrew Huberman."
