@@ -72,7 +72,7 @@ export default function Home() {
       <CourseHeader stage={getStageLabel()} />
       <main className="flex-1 flex items-center justify-center relative">
         <div className="absolute inset-0 -z-10 h-full w-full">
-          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] opacity-20"></div>
+          <div className="absolute bottom-0 left-0 right-0 top-0 bg-[linear-gradient(to_right,#383E472e_1px,transparent_1px),linear-gradient(to_bottom,#383E472e_1px,transparent_1px)] bg-[size:14px_24px] opacity-20"></div>
           <div className="absolute left-1/4 top-1/4 h-64 w-1/2 bg-primary/5 blur-[120px]"></div>
           <div className="absolute right-1/4 bottom-1/4 h-64 w-1/2 bg-accent/5 blur-[100px]"></div>
         </div>
